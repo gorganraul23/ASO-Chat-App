@@ -1,0 +1,117 @@
+{% extends 'core/base.html' %}
+
+{% block title %}{{ room.name }} | {% endblock %}
+
+{% block content %}
+<div class="rooms-title">
+    <h1>{{ room.name }}</h1>
+</div>
+
+<div>
+    <div class="chat-messages" id="chat-messages">
+        {% for message in messages %}
+        <div class="message">
+            <p class="username">{{ message.user.username }}</p>
+
+            {% if ".png" in message.content %}
+            <img src="/media/{{ message.content }}">
+            {% else %}
+            <p>{{ message.content }}</p>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="input-div">
+    <form method="post" action="." enctype="multipart/form-data">
+        <input type="text" name="content" class="input-text" placeholder="Your message..."
+               id="chat-message-input">
+        <input type="file" name="docfile" id="id-docfile">
+        <button class="send-button" id="chat-message-submit">
+            Send
+        </button>
+    </form>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+{{ room.slug|json_script:"json-roomname" }}
+{{ request.user.username|json_script:"json-username" }}
+<script>
+    const roomName = JSON.parse(document.getElementById('json-roomname').textContent);
+    const userName = JSON.parse(document.getElementById('json-username').textContent);
+    const chatSocket = new WebSocket(
+    'ws://' + window.location.host + '/ws/' + roomName + '/');
+
+    chatSocket.onopen = function (e) {
+		console.log("The connection was setup successfully !");
+	};
+
+	chatSocket.onclose = function (e) {
+		console.log("Something unexpected happened !");
+	};
+
+    document.querySelector('#chat-message-submit').onclick = function (e) {
+		e.preventDefault();
+		const messageInputDom = document.querySelector('#chat-message-input');
+		const photoInputDom = document.querySelector('#id-docfile');
+		let photo = photoInputDom.value;
+		var filename = photo.replace(/^.*[\\\/]/, '')
+		console.log(filename);
+		const message = messageInputDom.value;
+		chatSocket.send(JSON.stringify({
+		    'message': message? message: filename,
+		    'username' : userName,
+		    'room': roomName
+		}));
+
+		messageInputDom.value = '';
+		photoInputDom.value = '';
+
+        return false;
+	};
+
+	chatSocket.onmessage = function (e) {
+		console.log('onmmessage');
+		const data = JSON.parse(e.data);
+
+		if(data.message){
+		    let html = '<div class="message">';
+		    html += '<p class="username">' + data.username + '</p>';
+		    if(data.message.endsWith('.png')){
+		        console.log(data.message);
+		         html += '<img src="/media/' + data.message + '"' + '>';
+		    }
+		    else{
+		        html += '<p>' + data.message + '</p></div>';
+		    }
+
+		    document.querySelector('#chat-messages').innerHTML += html;
+		    scroll();
+		}
+		else{
+		    alert('The message was empty!');
+		}
+	};
+
+	function scroll(){
+        const div = document.querySelector('#chat-messages');
+        div.scrollTop = div.scrollHeight;
+	}
+
+<!--    document.querySelector('#chat-message-input').onchange = function (e) {-->
+<!--        console.log('is typing');-->
+<!--    }-->
+
+<!--    document.querySelector('#chat-message-input').addEventListener('change', typing);-->
+
+<!--    function typing(){-->
+<!--        console.log('is typing');-->
+<!--    }-->
+
+	scroll();
+
+</script>
+{% endblock %}

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<title>Register | Chat</title>
+<head>
+
+    <style>
+body{
+    background-color: black;
+    text-align: center;
+    color: white
+}
+* {box-sizing: border-box}
+
+input[type=text], input[type=password] {
+  width: 25%;
+  padding: 15px;
+  margin: 5px 0 22px 0;
+  display: inline-block;
+  border: none;
+  background: #f1f1f1;
+  border-radius: 5px;
+}
+
+input[type=text]:focus, input[type=password]:focus {
+  background-color: #ddd;
+  outline: none;
+}
+
+hr {
+  border: 1px solid #f1f1f1;
+  margin-bottom: 50px;
+}
+
+button {
+  background-color: #04AA6D;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  opacity: 0.9;
+  border-radius: 5px;
+}
+
+button:hover {
+  opacity:1;
+}
+
+.cancelbtn, .signupbtn {
+  padding: 14px 20px;
+  background-color: green;
+  margin-right: 5px;
+  width: 10%;
+}
+
+.cancelbtn {
+  background-color: red
+}
+
+.container {
+  padding: 16px;
+}
+
+    </style>
+
+</head>
+<body>
+<div>
+
+    <form action="" method="POST">
+        {% csrf_token %}
+        <div class="container">
+            <h1>Register</h1>
+            <hr>
+            {% for field in form %}
+            <div>
+                <p>{{ field.label }}: <br> {{ field }}</p>
+
+                {% for error in field.errors %}
+                <small style="color: red">{{ error }}</small>
+                {% endfor %}
+            </div>
+            {% endfor %}
+            <div>
+                <button type="button" class="cancelbtn" onclick="window.location='/auth/login';">Cancel</button>
+                <button type="submit" class="signupbtn">Continue</button>
+            </div>
+        </div>
+    </form>
+
+</div>
+</body>
+</html>

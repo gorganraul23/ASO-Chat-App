@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+
+body{
+  background-color: black;
+  text-align: center;
+  color: white
+}
+
+.signupbtn {
+  padding: 14px 20px;
+  background-color: green;
+  margin-right: 5px;
+  width: 10%;
+}
+
+input[type=text], input[type=password] {
+  width: 25%;
+  padding: 15px;
+  margin: 5px 0 22px 0;
+  display: inline-block;
+  border: none;
+  background: #f1f1f1;
+  border-radius: 5px;
+}
+
+input[type=text]:focus, input[type=password]:focus {
+  background-color: #ddd;
+  outline: none;
+}
+
+hr {
+  border: 1px solid #f1f1f1;
+  margin-bottom: 50px;
+}
+
+button {
+  background-color: #04AA6D;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  opacity: 0.9;
+  border-radius: 5px;
+}
+
+button:hover {
+  opacity:1;
+}
+
+.container {
+  padding: 16px;
+}
+
+    </style>
+</head>
+<title>Login</title>
+
+<body>
+<div>
+    <form method="post">
+        {% csrf_token %}
+        <div class="container">
+            <h1>Login</h1>
+            <hr>
+
+            <label><b>Username</b></label><br>
+            <input type="text" placeholder="Enter username" name="username" required><br>
+
+            <label><b>Password</b></label><br>
+            <input type="password" placeholder="Enter password" name="password" required><br>
+
+            <button type="submit" class="signupbtn">Login</button>
+            <button type="button" class="signupbtn" onclick="window.location='/register/';">Register</button>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>

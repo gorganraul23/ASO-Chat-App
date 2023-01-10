@@ -68,4 +68,3 @@ class ChatConsumer(AsyncWebsocketConsumer):
             path = 'photos/'
             img = Image.open(path + message)
             default_storage.save(message, img)
-
